@@ -31,8 +31,18 @@ def getMatchIDs(stop):
 
     if len(matchIDs) > 100:
         print("HLTV altered results page layout or offset %s" % (offset))
+    # Determines where to stop the array
     slice = matchIDs.index(stop)
-    matchIDs = matchIDs[:slice+1]
+    # Remove unecessary entries
+    matchIDs = matchIDs[:slice]
+    # Adds the unique match identifier as an aray to each item
+    for i in range(0, len(matchIDs)):
+        string = matchIDs[i]
+        split = string.split("/", 1)[0:1]
+        split.append(string)
+        matchIDs[i] = split
+    # Reverse the array so the most recent match is last
+    matchIDs = matchIDs[::-1]
     print("Parsed %s page(s)." % (page))
     return matchIDs
 
