@@ -2,6 +2,7 @@ from getMatchIDs import getMatchIDs
 from getMatchEvents import getMatchEvents
 from getEventNames import getEventNames
 from getMatchInfo import getMatchInfo
+from getMatchLineups import getMatchLineups
 from multiprocessing.dummy import Pool as ThreadPool
 import csv
 
@@ -118,12 +119,15 @@ else:
         # TODO tabulate("eventIDs", newEventIDs)
         pass
 
-    # Step 4: Update matches.csv
+    # Step 4: Update matchResults.csv
     newMatchInfo = scrape(matchesToCheck, getMatchInfo, threads)
     newMatchInfo = fixArray(fixArray(newMatchInfo, 14), 14)
-    # tabulate("matches2", newMatchInfo)
+    # tabulate("matchResults", newMatchInfo)
 
-    # TODO Step 5: Update matchLineups.csv; rework process(); move to html.py
+    # Step 5: Update matchLineups.csv
+    newMatchLineups = scrape(matchesToCheck, getMatchLineups, threads)
+    # tabulate("matchLineups", newMatchLineups)
+
     # TODO Step 6: Update teams.csv; rework process(); move to html.py
     # TODO Step 7: Update players.csv; rework process(); move to html.py
 

@@ -1,9 +1,8 @@
 from html import getHTML
 import re
-import multiprocessing
 
 
-print("Initialized getMatchIDs")
+print("Initialized script.")
 
 
 def getMatchIDs(stop):

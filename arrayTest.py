@@ -18,6 +18,7 @@ def fixArray(array, value):
             array.remove(array[i])
     return array
 
+
 array = [[1, 2, 3], [3, 4, 5], [["a", "b", "c"], ["c", "d", "e"]], [5, 6, 7]]
 value = 3
 array1 = [1, 2, 3, 4]
