@@ -1,3 +1,6 @@
+import sys
+# Tell the scraper to pull these functions from the support folder
+sys.path.insert(0, 'support')
 from helper import scrape, tabulate, getExistingData, removeExistingData, unDimension, fixArray
 from getMatchIDs import getMatchIDs
 from getMatchEvents import getMatchEvents
@@ -8,7 +11,6 @@ from getMatchLineups import getMatchLineups
 
 # Define number of CPU threads to use
 threads = 32
-
 
 # Make an array of existing Match IDs
 existingMatchIDs = getExistingData("matchIDs", 1)
@@ -47,7 +49,7 @@ else:
 
     # Step 5: Update matchLineups.csv
     newMatchLineups = scrape(matchesToCheck, getMatchLineups, threads)
-    tabulate("matchLineups", newMatchLineups)
+    # TODO: tabulate("matchLineups", newMatchLineups)
 
     # TODO Step 6: Update teams.csv; rework process(); move to html.py
     # TODO Step 7: Update players.csv; rework process(); move to html.py
