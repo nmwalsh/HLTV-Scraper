@@ -1,11 +1,6 @@
-from urllib.request import Request, urlopen
 from html import getHTML
 import re
-import csv
 from datetime import datetime
-import multiprocessing
-from multiprocessing.dummy import Pool as ThreadPool
-from multiprocessing import Process, Queue
 
 
 def getMatchInfo(matchID):
@@ -21,21 +16,21 @@ def getMatchInfo(matchID):
     if len(teamNames) < 1:
         return True
 
+    # Find the match date
     if len(date) > 0:
         date[0] = (date[0].replace("data-unix=\"", "")).replace("\"", "")[:-3]
         date[0] = datetime.utcfromtimestamp(int(date[0])).strftime('%Y-%m-%d')
     else:
         date.append(0)
 
-    # print teamID
+    # Find the Teams respective IDs
     if len(teamIDs) > 0:
         teamIDs[0] = (teamIDs[0].replace("src=\"https://static.hltv.org/images/team/logo/", "")).replace("\" class", "")
         teamIDs[1] = (teamIDs[1].replace("src=\"https://static.hltv.org/images/team/logo/", "")).replace("\" class", "")
-        # print(teamIDs[0] + teamIDs[1])
     else:
         teamIDs.append(0)
 
-    # print map
+    # Fidn the map(s) that the match was played on
     if len(map) == 1:
         map[0] = (map[0].replace("<div class=\"mapname\">", "")).replace("</div>", "")
     elif len(map) > 1:
@@ -44,7 +39,7 @@ def getMatchInfo(matchID):
     else:
         map.append(0)
 
-    # print scores
+    # Find the team starding and half sides
     sides = []
     if len(scores) == 1:
         if re.findall('\"t\"|\"ct\"', scores[0])[0] == '\"t\"':
@@ -64,8 +59,10 @@ def getMatchInfo(matchID):
     else:
         return True
 
+    # Find the scores if there is only one map
     if len(map) == 1:
         scores[0] = re.findall('\d+', scores[0])
+    # Find the scores if there are multiple maps
     elif len(map) > 1:
         for i in range(0, len(scores)):
             scores[i] = re.findall('\d+', scores[i])
@@ -73,18 +70,22 @@ def getMatchInfo(matchID):
         scores.append(0)
 
     for i in range(0, len(scores)):
+        # If there was no overtime, make the OT value 0
         if len(scores[i]) == 6:
             scores[i].append(0)
             scores[i].append(0)
         elif len(scores[i]) > 6:
+            # Do nothing, because OT scores are already calculated
             pass
         else:
+            print("HLTV altered score layout for %s" % (matchID))
             return True
 
-    # Handle printing
+    # Add results to arrays so we can access them from the scrape() method
     result = []
     if len(map) > 1:
         for i in range(0, len(scores)):
+            # Create a temp array so that each map's stats are each contained in their own array
             tempArray = []
             tempArray.append(date[0])
             tempArray.append(map[i])

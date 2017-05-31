@@ -118,7 +118,7 @@ else:
         # TODO tabulate("eventIDs", newEventIDs)
         pass
 
-    # TODO Step 4: Update matches.csv
+    # Step 4: Update matches.csv
     newMatchInfo = scrape(matchesToCheck, getMatchInfo, threads)
     newMatchInfo = fixArray(fixArray(newMatchInfo, 14), 14)
     # tabulate("matches2", newMatchInfo)
