@@ -1,28 +1,14 @@
-from urllib.request import Request, urlopen
+from html import getHTML
 import re
-import csv
-import multiprocessing
-from multiprocessing.dummy import Pool as ThreadPool
 
 
-def processIDs(eventIDs, threads):
-
-        # Define the number of threads
-        pool = ThreadPool(threads)
-
-        # Calls get() and adds the filesize returned each call to an array called filesizes
-        pool.map(getData, eventIDs)
-        pool.close()
-        pool.join()
-
-
-def getData(matchID):
+def getMatchEvents(matchID):
     html = getHTML("https://www.hltv.org/matches/%s" % (matchID))
     # Find the type of event (online, LAN, etc)
     eventName = re.findall('\"/events/.*/', html)
     if len(eventName) < 1:
-        # print("Failed %s" % (matchID))
-        return True
+        print("Failed %s" % (matchID))
+        return None
 
     # print eventType
     if len(eventName) > 1:
@@ -30,15 +16,7 @@ def getData(matchID):
     else:
         eventName.append(0)
 
-    print("%s,%s" % (matchID, eventName[0]))
-    return "%s,%s" % (matchID, eventName[0])
-
-
-def getHTML(url):
-    # Open the URL
-    # Spoof the user agent
-    request = Request(url)
-    request.add_header('User-Agent', 'Mozilla/5.0')
-    # Read the response as HTML
-    html = urlopen(request).read().decode('ascii', 'ignore')
-    return html
+    array = []
+    array.append(matchID)
+    array.append(eventName[0])
+    return array
