@@ -11,3 +11,15 @@ Once these have been added, it compares `matchIDs.csv` to `joinMatchEvent.csv` f
 ## Getting New Events
 
 From there, `getEventNames.py` compares `eventIDs.csv` to `joinMatchEvent.csv` and scrapes the respective event results page to determine various data about the event. The data is then appended to `eventIDs.csv`. 
+
+## Getting Match Results
+
+Once the new events have been accounted for, the script takes the array of new matches and sends them to `getMatchInfo.py` to scrape the necessary information. Since this returns multidimensional arrays for matches with more than one map, the script calls `fixArray()` twice to remove any extra dimensions. The method turns an array like this:
+
+	[[1, 2, 3], [3, 4, 5], [['a', 'b', 'c'], ['c', 'd', 'e']], [5, 6, 7]]
+ 
+ To an array like this:
+ 
+	[[1, 2, 3], [3, 4, 5], [5, 6, 7], ['a', 'b', 'c'], ['c', 'd', 'e']]
+ 
+ After that, it tabulates the new information to matches.csv

@@ -1,4 +1,5 @@
 from urllib.request import Request, urlopen
+from html import getHTML
 import re
 import csv
 from datetime import datetime
@@ -7,28 +8,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import Process, Queue
 
 
-
-def processIDs(matchIDs, threads):
-
-        # Define the number of threads
-        pool = ThreadPool(threads)
-
-        # Calls get() and adds the filesize returned each call to an array called filesizes
-        pool.map_async(getData, matchIDs)
-        pool.close()
-        pool.join()
-        print("Done!")
-
-def getData(matchID):
-    # Set some vars for later
-    team1 = 0
-    team2 = 0
-    team1half1 = 0
-    team1half2 = 0
-    team2half1 = 0
-    team2half2 = 0
-    team1ot = 0
-    team2ot = 0
+def getMatchInfo(matchID):
     html = getHTML("https://www.hltv.org/matches/%s" % (matchID))
     # Search variables data-unix="
     date = re.findall('data-unix=\".*\"', html)
@@ -96,88 +76,46 @@ def getData(matchID):
         if len(scores[i]) == 6:
             scores[i].append(0)
             scores[i].append(0)
-            for set in range(0, len(scores[i])):
-                team1 = scores[i][0]
-                team2 = scores[i][1]
-                team1half1 = scores[i][2]
-                team1half2 = scores[i][3]
-                team2half1 = scores[i][4]
-                team2half2 = scores[i][5]
-                team1ot = scores[i][6]
-                team2ot = scores[i][7]
         elif len(scores[i]) > 6:
-            for set in range(0, len(scores[i])):
-                team1 = scores[i][0]
-                team2 = scores[i][1]
-                team1half1 = scores[i][2]
-                team1half2 = scores[i][3]
-                team2half1 = scores[i][4]
-                team2half2 = scores[i][5]
-                team1ot = scores[i][6]
-                team2ot = scores[i][7]
+            pass
         else:
             return True
 
-
     # Handle printing
+    result = []
     if len(map) > 1:
         for i in range(0, len(scores)):
-            print("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % (date[0], map[i], teamIDs[0], sides[0], scores[i][0], scores[i][2], scores[i][4], scores[i][6], teamIDs[1], sides[1], scores[i][1], scores[i][3], scores[i][5], scores[i][7], matchID))
+            tempArray = []
+            tempArray.append(date[0])
+            tempArray.append(map[i])
+            tempArray.append(teamIDs[0])
+            tempArray.append(sides[0])
+            tempArray.append(scores[i][0])
+            tempArray.append(scores[i][2])
+            tempArray.append(scores[i][4])
+            tempArray.append(scores[i][6])
+            tempArray.append(teamIDs[1])
+            tempArray.append(sides[1])
+            tempArray.append(scores[i][1])
+            tempArray.append(scores[i][3])
+            tempArray.append(scores[i][5])
+            tempArray.append(scores[i][7])
+            tempArray.append(matchID)
+            result.append(tempArray)
     else:
-        print("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % (date[0], map[0], teamIDs[0], sides[0], scores[0][0], scores[0][2], scores[0][4], scores[0][6], teamIDs[1], sides[1], scores[0][1], scores[0][3], scores[0][5], scores[0][7], matchID))
-    return True
-
-
-def findMatchIDsAtURL(url):
-    # Get the HTML using getHTML()
-    html = getHTML(url)
-
-    # Create an array of all of the Demo URLs on the page
-    matchIDs = re.findall('"(.*?000"><a href="/matches/.*?)"', html)
-
-    # Loop through the messy array and removes the pesky parts
-    for i in range(0, len(matchIDs)):
-        matchIDs[i] = matchIDs[i].split('/', 2)[-1]
-    return matchIDs
-
-
-def getHTML(url):
-    # Open the URL
-    # Spoof the user agent
-    request = Request(url)
-    request.add_header('User-Agent', 'Mozilla/5.0')
-    # Read the response as HTML
-    html = urlopen(request).read().decode('ascii', 'ignore')
-    return html
-
-
-def chunks(list, chunks):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(list), chunks):
-        yield list[i:i + chunks]
-
-
-eventIDs = []
-with open('matchIDs.csv', encoding='utf-8') as csvfile:
-    readCSV = csv.reader(csvfile, delimiter=',')
-    for row in readCSV:
-        eventIDs.append(row[0])
-
-removeIDs = []
-with open('matches.csv', encoding='utf-8') as csvfile:
-    readCSV = csv.reader(csvfile, delimiter=',')
-    for row in readCSV:
-        removeIDs.append(row[14])
-
-
-print(len(eventIDs))
-for i in range(1, len(removeIDs)):
-    if removeIDs[i] in eventIDs:
-        eventIDs.remove(removeIDs[i])
-print(len(eventIDs))
-
-# eventIDs = ["2311209/teamone-vs-keyd-stars-liga-pro-alienware-gamersclub-4"]
-# print(eventIDs)
-# threads = multiprocessing.cpu_count()
-threads = 32
-processIDs(eventIDs, threads)
+        result.append(date[0])
+        result.append(map[0])
+        result.append(teamIDs[0])
+        result.append(sides[0])
+        result.append(scores[0][0])
+        result.append(scores[0][2])
+        result.append(scores[0][4])
+        result.append(scores[0][6])
+        result.append(teamIDs[1])
+        result.append(sides[1])
+        result.append(scores[0][1])
+        result.append(scores[0][3])
+        result.append(scores[0][5])
+        result.append(scores[0][7])
+        result.append(matchID)
+    return result

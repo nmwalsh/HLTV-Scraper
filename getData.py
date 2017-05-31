@@ -1,5 +1,7 @@
 from getMatchIDs import getMatchIDs
 from getMatchEvents import getMatchEvents
+from getEventNames import getEventNames
+from getMatchInfo import getMatchInfo
 from multiprocessing.dummy import Pool as ThreadPool
 import csv
 
@@ -11,6 +13,9 @@ threads = 32
 def scrape(array, function, threads):
         # Define the number of threads
         pool = ThreadPool(threads)
+
+        # Tell the user what is happening
+        print("Scraping %s items using %s on %s threads." % (len(array), function, threads))
 
         # Calls get() and adds the filesize returned each call to an array called filesizes
         result = pool.map(function, array)
@@ -56,10 +61,12 @@ def getExistingData(csvFile, rowNum):
 
 def removeExistingData(existing, new):
     # Remove data we alredy have from the list of new data to parse
-    for i in range(1, len(new)):
-        if new[i] in existing:
-            new.remove(new[i])
-    print("%s to add." % (len(new)))
+    for i in new[:]:
+        if i in existing:
+            new.remove(i)
+    # Convert new values to a set to remove dupelicates, then back to a list
+    new = list(set(new))
+    print("%s new items to add." % (len(new)))
     return new
 
 
@@ -69,6 +76,16 @@ def unDimension(array, item):
     for i in range(0, len(array)):
         result.append(array[i][item])
     return result
+
+
+def fixArray(array, value):
+    # Used to clean match info results for matches with more than one map
+    for i in range(0, len(array)):
+        if len(array[i]) < value:
+            for b in range(0, len(array[i])):
+                array.append(array[i][b])
+            array.remove(array[i])
+    return array
 
 
 # Make an array of existing Match IDs
@@ -83,19 +100,32 @@ else:
     print("%s new matches to tabulate" % (len(newMatchIDs)))
 
     # Step 1: add to matches.csv
-    tabulate("matchIDs", newMatchIDs)
+    # TODO tabulate("matchIDs", newMatchIDs)
 
-    # Step 2: add new matches to the event join tabulate
+    # Step 2: add new matches to the event join table
     events = getExistingData("joinMatchEvent", 0)
     matchesToCheck = removeExistingData(events, unDimension(newMatchIDs, 1))
     newEvents = scrape(matchesToCheck, getMatchEvents, threads)
-    tabulate("joinMatchEvent", newEvents)
+    # TODO tabulate("joinMatchEvent", newEvents)
 
-    # TODO Step 3: Add new events to eventIDs.csv
+    # Step 3: Add new events to eventIDs.csv
+    eventIDs = getExistingData("eventIDs", 3)
+    eventsToCheck = removeExistingData(eventIDs, unDimension(newEvents, 1))
+    newEventIDs = scrape(eventsToCheck, getEventNames, threads)
+    if len(newEventIDs) < 1:
+        print("No new event IDs to add!")
+    else:
+        # TODO tabulate("eventIDs", newEventIDs)
+        pass
+
     # TODO Step 4: Update matches.csv
-    # TODO Step 5: Update matchLineups.csv
-    # TODO Step 6: Update teams.csv
-    # TODO Step 7: Update players.csv
+    newMatchInfo = scrape(matchesToCheck, getMatchInfo, threads)
+    newMatchInfo = fixArray(fixArray(newMatchInfo, 14), 14)
+    # tabulate("matches2", newMatchInfo)
+
+    # TODO Step 5: Update matchLineups.csv; rework process(); move to html.py
+    # TODO Step 6: Update teams.csv; rework process(); move to html.py
+    # TODO Step 7: Update players.csv; rework process(); move to html.py
 
 
 # To call tabulate

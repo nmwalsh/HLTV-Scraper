@@ -1,4 +1,4 @@
-from urllib.request import Request, urlopen
+from html import getHTML
 import re
 import multiprocessing
 
@@ -30,17 +30,20 @@ def getMatchIDs(stop):
         morePages = endCheck(matchIDs, stop)
 
     if len(matchIDs) > 100:
-        print("HLTV altered results page layout or offset %s" % (offset))
+        print("HLTV altered results page layout for offset %s" % (offset))
+
     # Determines where to stop the array
     slice = matchIDs.index(stop)
     # Remove unecessary entries
     matchIDs = matchIDs[:slice]
+
     # Adds the unique match identifier as an aray to each item
     for i in range(0, len(matchIDs)):
         string = matchIDs[i]
         split = string.split("/", 1)[0:1]
         split.append(string)
         matchIDs[i] = split
+
     # Reverse the array so the most recent match is last
     matchIDs = matchIDs[::-1]
     print("Parsed %s page(s)." % (page))
@@ -64,19 +67,3 @@ def findMatchIDsAtURL(url):
     for i in range(0, len(matchIDs)):
         matchIDs[i] = matchIDs[i].split('/', 2)[-1]
     return matchIDs
-
-
-def getHTML(url):
-    # Open the URL
-    # Spoof the user agent
-    request = Request(url)
-    request.add_header('User-Agent', 'Mozilla/5.0')
-    # Read the response as HTML
-    html = urlopen(request).read().decode('ascii', 'ignore')
-    return html
-
-
-threads = multiprocessing.cpu_count()
-# matchIDs = getMatchIDs()
-# for i in range(0, len(matchIDs)):
-#     print(matchIDs[i])
