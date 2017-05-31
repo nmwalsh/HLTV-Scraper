@@ -1,86 +1,59 @@
 from urllib.request import Request, urlopen
 import re
-import csv
 import multiprocessing
-from multiprocessing.dummy import Pool as ThreadPool
 
 
-def getMatchIDs(eventid):
+print("Initialized getMatchIDs")
+
+
+def getMatchIDs(stop):
     # Create an offset variable for lists that are paginated on HLTV
     offset = 0
-    # Build the URL
 
     # Create an array of all of the Demo URLs on the page
     matchIDs = findMatchIDsAtURL("https://www.hltv.org/results?offset=%s" % (offset))
 
-    # If the length is = 50, offset by 50 and loop again
-    if len(matchIDs) == 100:
-        print("Parsed first page. Found %s IDs" % (len(matchIDs)))
+    # Determien if we need to paginate and createa  varibale to keep track of pages
+    morePages = endCheck(matchIDs, stop)
+    page = 1
+    while morePages:
+        # Offset by 100 to get the next 100 matches
+        offset += 100
 
-        # Set a boolean to close the while loop and a page variable we can increment when paginating
-        morePages = True
-        page = 1
+        moreMatchIDs = findMatchIDsAtURL("https://www.hltv.org/results?offset=%s" % (offset))
+        # Append the new IDs to the master list
+        for m in moreMatchIDs:
+            matchIDs.append(m)
+        # Continue paginating adn updating the user
+        page += 1
+        print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
+        morePages = endCheck(matchIDs, stop)
 
-        # While check is true, offset by 50
-        while morePages:
-            offset += 100
-
-            # Same URL building and parsing as above
-            moreMatchIDs = findMatchIDsAtURL("https://www.hltv.org/results?offset=%s" % (offset))
-            for m in moreMatchIDs:
-                matchIDs.append(m)
-
-            # Determine if there are additional pages to be found, if not the while loop ends
-            if len(moreMatchIDs) < 100:
-                morePages = False
-                page += 1
-                print("Parsed page %s. Found %s IDs." % (page, len(matchIDs)))
-            else:
-                # Prints the current page and the number of parsed IDs
-                page += 1
-                print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
-
-    elif len(matchIDs) < 100:
-        print("Total demos: %s" % len(matchIDs))
-    elif len(matchIDs) > 100:
-        print("HLTV altered demo page layout on offset %s" % (offset))
+    if len(matchIDs) > 100:
+        print("HLTV altered results page layout or offset %s" % (offset))
+    slice = matchIDs.index(stop)
+    matchIDs = matchIDs[:slice+1]
+    print("Parsed %s page(s)." % (page))
     return matchIDs
+
+
+def endCheck(matchIDs, stop):
+    if stop in matchIDs:
+        return False
+    return True
 
 
 def findMatchIDsAtURL(url):
     # Get the HTML using getHTML()
     html = getHTML(url)
 
-    # Create an array of all of the Demo URLs on the page
+    # Create an array of all of the Match URLs on the page
     matchIDs = re.findall('"(.*?000"><a href="/matches/.*?)"', html)
 
     # Loop through the messy array and removes the pesky parts
     for i in range(0, len(matchIDs)):
         matchIDs[i] = matchIDs[i].split('/', 2)[-1]
     return matchIDs
-
-
-def getDemoIDs(matchID):
-    # URL building and opening
-    url = "https://www.hltv.org/matches/%s" % (matchID)
-    html = getHTML(url)
-    demoID = re.findall('"(/download/demo/.*?)"', html)
-
-    # Check if re.findall()'s array is empty
-    # If it has an element, add that Demo ID to the demoIDs array
-    if len(demoID) > 0:
-        # Loop through the demoIDs array and remove everything up to the last / to get the real Demo ID
-        for i in range(0, len(demoID)):
-            demoID[i] = demoID[i].rsplit('/', 1)[-1]
-            print("Converted %s" % (matchID))
-            # Return the Demo ID
-            return demoID[0]
-
-    # If there is no element, print which match has no demo
-    elif len(demoID) < 1:
-        print("No demo found for %s" % (matchID))
-        # Return the Match ID with a space char so we can find it later
-        return " %s" % matchID
 
 
 def getHTML(url):
@@ -93,13 +66,7 @@ def getHTML(url):
     return html
 
 
-# Calls the method for a given Event ID.
-# TODO eventID = raw_input("What is the event ID? ")
-eventID = 2334
 threads = multiprocessing.cpu_count()
-matchIDs = getMatchIDs(eventID)
-for i in range(0, len(matchIDs)):
-    print(matchIDs[i])
-# eventName = getData(eventID)
-# demoIDs = convertToDemoIDs(matchIDs, threads)
-# download(demoIDs, threads)
+# matchIDs = getMatchIDs()
+# for i in range(0, len(matchIDs)):
+#     print(matchIDs[i])
