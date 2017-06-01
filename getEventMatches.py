@@ -1,10 +1,8 @@
-from urllib.request import Request, urlopen
 import re
 import csv
-import string
-import random
 import multiprocessing
 from multiprocessing.dummy import Pool as ThreadPool
+from support import html
 
 
 def processIDs(eventIDs, threads):
@@ -74,16 +72,6 @@ def findMatchIDsAtURL(url):
     for i in range(0, len(matchIDs)):
         matchIDs[i] = matchIDs[i].split('/', 2)[-1]
     return matchIDs
-
-
-def getHTML(url):
-    # Open the URL
-    # Spoof the user agent
-    request = Request(url)
-    request.add_header('User-Agent', 'Mozilla/5.0')
-    # Read the response as HTML
-    html = urlopen(request).read().decode('utf-8')
-    return html
 
 
 eventIDs = []

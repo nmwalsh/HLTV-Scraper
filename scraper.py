@@ -1,12 +1,9 @@
-import sys
-# Tell the scraper to pull these functions from the support folder
-sys.path.insert(0, 'support')
-from helper import scrape, tabulate, getExistingData, removeExistingData, unDimension, fixArray
 from getMatchIDs import getMatchIDs
 from getMatchEvents import getMatchEvents
 from getEventNames import getEventNames
 from getMatchInfo import getMatchInfo
 from getMatchLineups import getMatchLineups
+from helper import scrape, getExistingData, removeExistingData, unDimension, fixArray
 
 
 # Define number of CPU threads to use
