@@ -6,7 +6,7 @@ from getMatchLineups import getMatchLineups
 from helper import scrape, getExistingData, removeExistingData, unDimension, fixArray
 
 
-# Define number of CPU threads to use
+# Define number of threads to use
 threads = 32
 
 # Make an array of existing Match IDs
@@ -49,6 +49,7 @@ else:
     # TODO: tabulate("matchLineups", newMatchLineups)
 
     # TODO Step 6: Update teams.csv; rework process(); move to html.py
+    # Possibly: get max value from players csv, then iterate up until 404 (same for below)
     # TODO Step 7: Update players.csv; rework process(); move to html.py
 
 
