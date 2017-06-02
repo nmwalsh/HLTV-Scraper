@@ -105,8 +105,9 @@ def getNewIterableItems(page, startID):
         if len(re.findall('error-desc', html)) > 0:
             check = False
         else:
-            print("New %s found: %s" % (page, startID))
+            sys.stdout.write('\r'+"New %s found: %s" % (page, startID))
+            sys.stdout.flush()
             array.append(startID)
-    sys.stdout.write('\r'+"Found %s new %ss." % (len(array), page))
-    sys.stdout.flush()
+
+    print("\nFound %s new %ss." % (len(array), page))
     return array

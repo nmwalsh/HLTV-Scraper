@@ -28,7 +28,7 @@ def getMatchIDs(stop):
         print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
         morePages = endCheck(matchIDs, stop)
 
-    if len(matchIDs) > 100:
+    if len(matchIDs) % 100 <>:
         print("HLTV altered results page layout for offset %s" % (offset))
 
     # Determines where to stop the array
