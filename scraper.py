@@ -3,7 +3,7 @@ from getMatchEvents import getMatchEvents
 from getEventNames import getEventNames
 from getMatchInfo import getMatchInfo
 from getMatchLineups import getMatchLineups
-from helper import scrape, getExistingData, removeExistingData, unDimension, fixArray
+from helper import scrape, getExistingData, removeExistingData, unDimension, fixArray, findMax, getNewIterableItems
 
 
 # Define number of threads to use
@@ -49,8 +49,11 @@ else:
     # TODO: tabulate("matchLineups", newMatchLineups)
 
     # TODO Step 6: Update teams.csv; rework process(); move to html.py
-    # Possibly: get max value from players csv, then iterate up until 404 (same for below)
+    newTeams = getNewIterableItems("team", findMax("teams", 2))
+    print(newTeams)
     # TODO Step 7: Update players.csv; rework process(); move to html.py
+    newPlayers = getNewIterableItems("player", findMax("players", 2))
+    print(newPlayers)
 
 
 # To call tabulate

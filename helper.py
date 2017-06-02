@@ -1,4 +1,6 @@
 from multiprocessing.dummy import Pool as ThreadPool
+from html import getHTML
+import re
 import csv
 
 
@@ -40,15 +42,26 @@ def tabulate(csvFile, array):
     return True
 
 
-def getExistingData(csvFile, rowNum):
-    # Add the values in rowNum in csvFile to an array
+def getExistingData(csvFile, colNum):
+    # Add the values in colNum in csvFile to an array
     array = []
     print("Reading data from %s.csv." % (csvFile))
     with open("csv/%s.csv" % (csvFile), encoding='utf-8') as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         for row in readCSV:
-            array.append(row[rowNum])
+            array.append(row[colNum])
     return array
+
+
+def findMax(csvFile, colNum):
+    array = []
+    print("Reading data from %s.csv." % (csvFile))
+    with open("csv/%s.csv" % (csvFile), encoding='utf-8') as csvfile:
+        next(csvfile)
+        readCSV = csv.reader(csvfile, delimiter=',')
+        for row in readCSV:
+            array.append(int(row[colNum]))
+    return max(array)
 
 
 def removeExistingData(existing, new):
@@ -77,4 +90,20 @@ def fixArray(array, value):
             for b in range(0, len(array[i])):
                 array.append(array[i][b])
             array.remove(array[i])
+    return array
+
+
+def getNewIterableItems(page, startID):
+    # Iterate through unique IDs until we get the last one, then return them to a list
+    print("Checking for new %ss. This may take awhile." % (page))
+    check = True
+    array = []
+    while check:
+        startID += 1
+        html = getHTML("https://www.hltv.org/%s/%s/a" % (page, startID))
+        array.append(startID)
+        print("New %s found: %s" % (page, startID))
+        if len(re.findall('error-desc', html)) > 0:
+            check = False
+    print("Found %s new %ss." % (len(array), page))
     return array

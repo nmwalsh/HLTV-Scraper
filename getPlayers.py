@@ -1,20 +1,4 @@
-from urllib.request import Request, urlopen
-import re
-import csv
-from datetime import datetime
-import multiprocessing
-from multiprocessing.dummy import Pool as ThreadPool
-
-
-def processIDs(eventIDs, threads):
-
-        # Define the number of threads
-        pool = ThreadPool(threads)
-
-        # Calls get() and adds the filesize returned each call to an array called filesizes
-        pool.map(getData, eventIDs)
-        pool.close()
-        pool.join()
+from html import getHTML
 
 
 def getData(playerID):
@@ -41,18 +25,3 @@ def getData(playerID):
 
     print("%s,%s,%s" % (playerName[0], playerCountry[0], playerID))
     return "%s,%s,%s" % (playerName[0], playerCountry[0], playerID)
-
-
-def getHTML(url):
-    # Open the URL
-    # Spoof the user agent
-    request = Request(url)
-    request.add_header('User-Agent', 'Mozilla/5.0')
-    # Read the response as HTML
-    html = urlopen(request).read().decode('ascii', 'ignore')
-    return html
-
-
-eventIDs = list(range(1, 14244))
-threads = multiprocessing.cpu_count()
-processIDs(eventIDs, threads)
