@@ -54,3 +54,4 @@ else:
     newPlayers = getNewIterableItems("player", findMax("players", 2))
     newPlayers = scrape(newPlayers, getPlayers, threads)
     # TODO tabulate("players", newPlayers)
+    print("Completed tabulation for %s new matches, %s new teams, and %s new players." % (len(matchesToCheck), len(newTeams), len(newPlayers)))

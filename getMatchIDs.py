@@ -12,9 +12,10 @@ def getMatchIDs(stop):
     # Create an array of all of the Demo URLs on the page
     matchIDs = findMatchIDsAtURL("https://www.hltv.org/results?offset=%s" % (offset))
 
-    # Determien if we need to paginate and createa  varibale to keep track of pages
+    # Determien if we need to paginate and create a varibale to keep track of pages
     morePages = endCheck(matchIDs, stop)
     page = 1
+    print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
     while morePages:
         # Offset by 100 to get the next 100 matches
         offset += 100
@@ -28,7 +29,7 @@ def getMatchIDs(stop):
         print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
         morePages = endCheck(matchIDs, stop)
 
-    if len(matchIDs) % 100 <>:
+    if len(matchIDs) % 100 != 0:
         print("HLTV altered results page layout for offset %s" % (offset))
 
     # Determines where to stop the array

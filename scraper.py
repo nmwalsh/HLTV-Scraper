@@ -1,6 +1,5 @@
 from html import getHTML
 import re
-import sys
 from datetime import datetime
 
 
