@@ -6,7 +6,7 @@ This is a Python scraper designed to pull data from HLTV.org and tabulate it int
 
 ## Installation
 
-Since this is written in pure Python, there are no dependences to install. Simple clone the repository or download the zip file, then `cd` to the directory and run `python3 start.py`. There is demonstration [here](https://twitter.com/rxcs/status/870564131715162112).
+Since this is written in pure Python, there are no dependencies to install. Simply clone the repository or download the zip file, then `cd` to the directory and run `python3 start.py`. There is demonstration [here](https://twitter.com/rxcs/status/870564131715162112).
 
 ![](https://i.imgur.com/fwEie8t.png)
 
@@ -40,7 +40,7 @@ Since this returns multidimensional arrays for matches with more than one map, t
  
 ## Getting Match Lineups 
 
-Next the script parses the same new matches stored in `MatchesToCheck` and find the respective team lineups and tabulates the new information to `matchLineups.csv`.
+Next, the script parses the same new matches stored in `MatchesToCheck` and find the respective team lineups and tabulates the new information to `matchLineups.csv`.
 
 ## Updating Players and Teams
 
