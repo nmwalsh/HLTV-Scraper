@@ -2,6 +2,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 from html import getHTML
 import re
 import csv
+import sys
 
 
 def scrape(array, function, threads):
@@ -101,9 +102,11 @@ def getNewIterableItems(page, startID):
     while check:
         startID += 1
         html = getHTML("https://www.hltv.org/%s/%s/a" % (page, startID))
-        array.append(startID)
-        print("New %s found: %s" % (page, startID))
         if len(re.findall('error-desc', html)) > 0:
             check = False
-    print("Found %s new %ss." % (len(array), page))
+        else:
+            print("New %s found: %s" % (page, startID))
+            array.append(startID)
+    sys.stdout.write('\r'+"Found %s new %ss." % (len(array), page))
+    sys.stdout.flush()
     return array
