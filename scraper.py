@@ -61,9 +61,3 @@ else:
     newPlayers = scrape(newPlayers, getPlayers, threads)
     print(newPlayers)
     # TODO tabulate("players", newPlayers)
-
-
-# To call tabulate
-# fields = [["a1", "2b", "3c"], ["4d", "e6", "f5"], ["8g", "9h", "7i"]]
-# tabulate("name", fields)
-# 22032
