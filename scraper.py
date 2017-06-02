@@ -3,7 +3,9 @@ from getMatchEvents import getMatchEvents
 from getEventNames import getEventNames
 from getMatchInfo import getMatchInfo
 from getMatchLineups import getMatchLineups
-from helper import scrape, getExistingData, removeExistingData, unDimension, fixArray, findMax, getNewIterableItems
+from getPlayers import getPlayers
+from getTeams import getTeams
+from helper import scrape, tabulate, getExistingData, removeExistingData, unDimension, fixArray, findMax, getNewIterableItems
 
 
 # Define number of threads to use
@@ -41,19 +43,24 @@ else:
 
     # Step 4: Update matchResults.csv
     newMatchInfo = scrape(matchesToCheck, getMatchInfo, threads)
+    # Sometimes this returns a multi-dimensional array, so we remove it
     newMatchInfo = fixArray(fixArray(newMatchInfo, 14), 14)
-    # tabulate("matchResults", newMatchInfo)
+    # TODO tabulate("matchResults", newMatchInfo)
 
     # Step 5: Update matchLineups.csv
     newMatchLineups = scrape(matchesToCheck, getMatchLineups, threads)
     # TODO: tabulate("matchLineups", newMatchLineups)
 
-    # TODO Step 6: Update teams.csv; rework process(); move to html.py
+    # Step 6: Update teams.csv
     newTeams = getNewIterableItems("team", findMax("teams", 2))
+    newTeams = scrape(newTeams, getTeams, threads)
     print(newTeams)
-    # TODO Step 7: Update players.csv; rework process(); move to html.py
+    # TODO tabulate("teams", newTeams)
+    # Step 7: Update players.csv
     newPlayers = getNewIterableItems("player", findMax("players", 2))
+    newPlayers = scrape(newPlayers, getPlayers, threads)
     print(newPlayers)
+    # TODO tabulate("players", newPlayers)
 
 
 # To call tabulate

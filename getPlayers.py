@@ -1,7 +1,8 @@
 from html import getHTML
+import re
 
 
-def getData(playerID):
+def getPlayers(playerID):
     html = getHTML("https://www.hltv.org/player/%s/a" % (playerID))
     # Find the type of event (online, LAN, etc)
     playerName = re.findall('Complete statistics for.*</a>', html)
@@ -13,7 +14,7 @@ def getData(playerID):
 
     # print teamName
     if len(playerName) > 0:
-        playerName[0] = (playerName[0].replace("Complete statistics for", "")).replace("</a>", "")
+        playerName[0] = (playerName[0].replace("Complete statistics for ", "")).replace("</a>", "")
     else:
         playerName.append(0)
 
@@ -23,5 +24,9 @@ def getData(playerID):
     else:
         playerCountry.append(0)
 
-    print("%s,%s,%s" % (playerName[0], playerCountry[0], playerID))
-    return "%s,%s,%s" % (playerName[0], playerCountry[0], playerID)
+    array = []
+    array.append(playerName[0])
+    array.append(playerCountry[0])
+    array.append(playerID)
+
+    return array
