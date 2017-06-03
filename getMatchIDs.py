@@ -19,16 +19,18 @@ def getMatchIDs(stop):
     while morePages:
         # Offset by 100 to get the next 100 matches
         offset += 100
-
         moreMatchIDs = findMatchIDsAtURL("https://www.hltv.org/results?offset=%s" % (offset))
+
         # Append the new IDs to the master list
         for m in moreMatchIDs:
             matchIDs.append(m)
+
         # Continue paginating adn updating the user
         page += 1
         print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
         morePages = endCheck(matchIDs, stop)
 
+    # Ensure that there have been no chanegs to the page layout
     if len(matchIDs) % 100 != 0:
         print("HLTV altered results page layout for offset %s" % (offset))
 

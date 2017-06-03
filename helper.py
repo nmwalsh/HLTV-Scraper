@@ -55,6 +55,7 @@ def getExistingData(csvFile, colNum):
 
 
 def findMax(csvFile, colNum):
+    # Find the maximum value in a column in an array
     array = []
     print("Reading data from %s.csv." % (csvFile))
     with open("csv/%s.csv" % (csvFile), encoding='utf-8') as csvfile:

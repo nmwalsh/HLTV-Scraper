@@ -5,6 +5,8 @@ from helper import *
 
 # Define number of threads to use
 threads = 32
+# Set to true to activate tabulation
+tab = False
 
 # Make an array of existing Match IDs
 existingMatchIDs = getExistingData("matchIDs", 1)
@@ -18,13 +20,15 @@ else:
     print("%s new matches to tabulate" % (len(newMatchIDs)))
 
     # Step 1: add to matches.csv
-    # TODO tabulate("matchIDs", newMatchIDs)
+    if tab:
+        tabulate("matchIDs", newMatchIDs)
 
     # Step 2: add new matches to the event join table
     events = getExistingData("joinMatchEvent", 0)
     matchesToCheck = removeExistingData(events, unDimension(newMatchIDs, 1))
     newEvents = scrape(matchesToCheck, getMatchEvents, threads)
-    # TODO tabulate("joinMatchEvent", newEvents)
+    if tab:
+        tabulate("joinMatchEvent", newEvents)
 
     # Step 3: Add new events to eventIDs.csv
     eventIDs = getExistingData("eventIDs", 3)
@@ -32,26 +36,29 @@ else:
     newEventIDs = scrape(eventsToCheck, getEventNames, threads)
     if len(newEventIDs) < 1:
         print("No new event IDs to add!")
-    else:
-        # TODO tabulate("eventIDs", newEventIDs)
-        pass
+    elif tab:
+        tabulate("eventIDs", newEventIDs)
 
     # Step 4: Update matchResults.csv
     newMatchInfo = scrape(matchesToCheck, getMatchInfo, threads)
     # Sometimes this returns a multi-dimensional array, so we remove it
     newMatchInfo = fixArray(fixArray(newMatchInfo, 14), 14)
-    # TODO tabulate("matchResults", newMatchInfo)
+    if tab:
+        tabulate("matchResults", newMatchInfo)
 
     # Step 5: Update matchLineups.csv
     newMatchLineups = scrape(matchesToCheck, getMatchLineups, threads)
-    # TODO: tabulate("matchLineups", newMatchLineups)
+    if tab:
+        tabulate("matchLineups", newMatchLineups)
 
     # Step 6: Update teams.csv
     newTeams = getNewIterableItems("team", findMax("teams", 2))
     newTeams = scrape(newTeams, getTeams, threads)
-    # TODO tabulate("teams", newTeams)
+    if tab:
+        tabulate("teams", newTeams)
     # Step 7: Update players.csv
     newPlayers = getNewIterableItems("player", findMax("players", 2))
     newPlayers = scrape(newPlayers, getPlayers, threads)
-    # TODO tabulate("players", newPlayers)
+    if tab:
+        tabulate("players", newPlayers)
     print("Completed tabulation for %s new matches, %s new teams, and %s new players." % (len(matchesToCheck), len(newTeams), len(newPlayers)))

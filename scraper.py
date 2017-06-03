@@ -29,6 +29,7 @@ def getEventNames(eventID):
         eventEndDate[0] = (eventEndDate[0].replace("class=\"standard-headline\">", "")).replace("<", "")
     else:
         eventEndDate.append(0)
+    # Make an array for pool.map to process
     result = []
     result.append(eventType[0])
     result.append(eventNames[0])
@@ -51,6 +52,7 @@ def getMatchEvents(matchID):
     else:
         eventName.append(0)
 
+    # Make an array for pool.map to process
     array = []
     array.append(matchID)
     array.append(eventName[0])
@@ -81,6 +83,7 @@ def getTeams(teamID):
     else:
         teamCountry.append(0)
 
+    # Make an array for pool.map to process
     array = []
     array.append(teamName[0])
     array.append(teamCountry[0])
@@ -167,7 +170,7 @@ def getMatchInfo(matchID):
             print("HLTV altered score layout for %s" % (matchID))
             return True
 
-    # Add results to arrays so we can access them from the scrape() method
+    # Make an array for pool.map to process
     result = []
     if len(map) > 1:
         for i in range(0, len(scores)):
@@ -222,9 +225,8 @@ def getMatchLineups(matchID):
     # print(playerIDs)c
     # print(playerIDs[0:5] + playerIDs[10:15])
 
-    # Handle printing
+    # Make an array for pool.map to process
     if len(playerIDs) > 15:
-        # print(matchID)
         players = []
         players.append(playerIDs[0])
         players.append(playerIDs[1])
@@ -265,6 +267,7 @@ def getPlayers(playerID):
     else:
         playerCountry.append(0)
 
+    # Make an array for pool.map to process
     array = []
     array.append(playerName[0])
     array.append(playerCountry[0])
