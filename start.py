@@ -5,7 +5,7 @@ from helper import *
 
 # Define number of threads to use
 threads = 32
-# Set to true to activate tabulation
+# Set to True to activate tabulation
 tab = False
 
 # Make an array of existing Match IDs
