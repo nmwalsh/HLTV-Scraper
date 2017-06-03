@@ -1,6 +1,6 @@
 # HLTV Scraper
 
-This is a Python scraper designed to pull data from HLTV.org and tabulate it into a series of CSV files. It is written in pure Python, so it should run on any system that can run Python 3. It is not compatible with Python 2, so you may need to install the latest Python release from [here](https://www.python.org/downloads/).
+This is a multi-threaded Python scraper designed to pull data from HLTV.org and tabulate it into a series of CSV files. It is written in pure Python, so it should run on any system that can run Python 3. It is not compatible with Python 2, so you may need to install the latest Python release from [here](https://www.python.org/downloads/).
 
 ## Installation
 
@@ -26,7 +26,7 @@ Once the new events have been accounted for, the script takes `matchesToCheck` a
 
 ### Handling Multiple Maps
 
-Since this returns multidimensional arrays for matches with more than one map, the script calls `fixArray()` twice to remove any extra dimensions. The method turns an array like this:
+Since this returns multidimensional arrays for matches with more than one map, the script calls `fixArray()` thrice to remove any extra dimensions. The method turns an array like this:
 
 	[[1, 2, 3], [3, 4, 5], [['a', 'b', 'c'], ['c', 'd', 'e']], [5, 6, 7]]
  
