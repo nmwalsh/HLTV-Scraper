@@ -5,8 +5,8 @@ from helper import *
 
 # Define number of threads to use
 threads = 32
-# Set to True to activate tabulation
-tab = False
+# Set to True to activate tabulation and False to disable it.
+tab = True
 
 # Make an array of existing Match IDs
 existingMatchIDs = getExistingData("matchIDs", 1)
@@ -42,7 +42,7 @@ else:
     # Step 4: Update matchResults.csv
     newMatchInfo = scrape(matchesToCheck, getMatchInfo, threads)
     # Sometimes this returns a multi-dimensional array, so we remove it
-    newMatchInfo = fixArray(fixArray(newMatchInfo, 14), 14)
+    newMatchInfo = fixArray(fixArray(fixArray(newMatchInfo, 14), 14), 14)
     if tab:
         tabulate("matchResults", newMatchInfo)
 
@@ -61,4 +61,4 @@ else:
     newPlayers = scrape(newPlayers, getPlayers, threads)
     if tab:
         tabulate("players", newPlayers)
-    print("Completed tabulation for %s new matches, %s new teams, and %s new players." % (len(matchesToCheck), len(newTeams), len(newPlayers)))
+    print("Completed tabulation for %s new matches, %s new events, %s new teams, and %s new players." % (len(matchesToCheck), len(newEventIDs), len(newTeams), len(newPlayers)))

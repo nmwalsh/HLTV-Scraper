@@ -8,7 +8,7 @@ This is a Python scraper designed to pull data from HLTV.org and tabulate it int
 
 Since this is written in pure Python, there are no dependencies to install. Simply clone the repository or download the zip file, then `cd` to the directory and run `python3 start.py`. There is demonstration [here](https://twitter.com/rxcs/status/870564131715162112).
 
-![](https://i.imgur.com/fwEie8t.png)
+![](https://i.imgur.com/g5Wk3eS.png)
 
 ## Getting New Matches
 

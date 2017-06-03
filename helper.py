@@ -38,7 +38,8 @@ def tabulate(csvFile, array):
         addNewLine("csv/%s.csv" % (csvFile))
         # Add the array passed in to the CSV file
         for i in range(0, len(array)):
-            writer.writerow(array[i])
+            if len(array[i]) > 0:
+                writer.writerow(array[i])
         print("Succesfully tabulated %s rows to %s.csv." % (len(array), csvFile))
     return True
 

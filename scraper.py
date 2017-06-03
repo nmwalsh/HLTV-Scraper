@@ -8,7 +8,7 @@ def getEventNames(eventID):
     # Find the type of event (online, LAN, etc)
     eventType = re.findall(' <div class=\".*text-ellipsis\">', html)
     if len(eventType) < 1:
-        return True
+        return []
     eventNames = re.findall('text-ellipsis\">.*<', html)
     eventEndDate = re.findall('class="standard-headline">.*<', html)
 
@@ -44,7 +44,7 @@ def getMatchEvents(matchID):
     eventName = re.findall('\"/events/.*/', html)
     if len(eventName) < 1:
         print("Failed %s" % (matchID))
-        return None
+        return []
 
     # print eventType
     if len(eventName) > 1:
@@ -64,12 +64,12 @@ def getTeams(teamID):
     # Find the type of event (online, LAN, etc)
     teamName = re.findall('<div><span class=\"subjectname\">.*</span><br><i', html)
     if len(teamName) < 1:
-        return True
+        return []
     teamCountry = re.findall('fa fa-map-marker\" aria-hidden=\"true\"></i>.*<', html)
     if len(teamCountry) < 1:
         teamCountry = re.findall('fa fa-map-marker\" aria-hidden=\"true\"></i>.*</div>', html)
     if len(teamCountry) < 1:
-        return True
+        return []
 
     # print teamName
     if len(teamName) > 0:
@@ -103,7 +103,7 @@ def getMatchInfo(matchID):
 
     # Give up if no team names found
     if len(teamNames) < 1:
-        return True
+        return []
 
     # Find the match date
     if len(date) > 0:
@@ -242,7 +242,7 @@ def getMatchLineups(matchID):
         return players
     else:
         print("HLTV altered lineup layout for %s" % (matchID))
-        return None
+        return []
 
 
 def getPlayers(playerID):
