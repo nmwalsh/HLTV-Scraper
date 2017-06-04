@@ -1,10 +1,14 @@
 from html import getHTML
 import re
 from datetime import datetime
+from string import digits
 
 
 def getEventNames(eventID):
     html = getHTML("https://www.hltv.org/results?offset=0&event=%s" % (eventID))
+    if html is None:
+        print("Failed for %s" % (eventID))
+        return []
     # Find the type of event (online, LAN, etc)
     eventType = re.findall(' <div class=\".*text-ellipsis\">', html)
     if len(eventType) < 1:
@@ -40,6 +44,9 @@ def getEventNames(eventID):
 
 def getMatchEvents(matchID):
     html = getHTML("https://www.hltv.org/matches/%s" % (matchID))
+    if html is None:
+        print("Failed for %s" % (matchID))
+        return []
     # Find the type of event (online, LAN, etc)
     eventName = re.findall('\"/events/.*/', html)
     if len(eventName) < 1:
@@ -61,6 +68,9 @@ def getMatchEvents(matchID):
 
 def getTeams(teamID):
     html = getHTML("https://www.hltv.org/team/%s/a" % (teamID))
+    if html is None:
+        print("Failed for %s" % (teamID))
+        return []
     # Find the type of event (online, LAN, etc)
     teamName = re.findall('<div><span class=\"subjectname\">.*</span><br><i', html)
     if len(teamName) < 1:
@@ -94,6 +104,9 @@ def getTeams(teamID):
 
 def getMatchInfo(matchID):
     html = getHTML("https://www.hltv.org/matches/%s" % (matchID))
+    if html is None:
+        print("Failed for %s" % (matchID))
+        return []
     # Search variables data-unix="
     date = re.findall('data-unix=\".*\"', html)
     teamIDs = re.findall('src=\"https://static.hltv.org/images/team/logo/.*\" class', html)
@@ -214,6 +227,9 @@ def getMatchInfo(matchID):
 def getMatchLineups(matchID):
     # Set some vars for later
     html = getHTML("https://www.hltv.org/matches/%s" % (matchID))
+    if html is None:
+        print("Failed for %s" % (matchID))
+        return []
     playerIDs = re.findall('<a href=\"/player/.*/', html)
 
     # Give up if no team names found
@@ -247,6 +263,9 @@ def getMatchLineups(matchID):
 
 def getPlayers(playerID):
     html = getHTML("https://www.hltv.org/player/%s/a" % (playerID))
+    if html is None:
+        print("Failed for %s" % (playerID))
+        return []
     # Find the type of event (online, LAN, etc)
     playerName = re.findall('Complete statistics for.*</a>', html)
     if len(playerName) < 1:
@@ -274,3 +293,101 @@ def getPlayers(playerID):
     array.append(playerID)
 
     return array
+
+
+def getPlayerStats(matchID):
+    html = getHTML("https://www.hltv.org/matches/%s" % (matchID))
+    if html is None:
+        print("Failed for %s" % (matchID))
+        return []
+
+    # Get maps
+    maps = re.findall('<div class=\"stats-content\" id=\".*\">', html)
+    if len(maps) > 0:
+        for i in range(0, len(maps)):
+            maps[i] = (maps[i].replace("<div class=\"stats-content\" id=\"", "")).replace("-content\">", "").translate({ord(k): None for k in digits})
+    else:
+        pass
+    maps.remove(maps[0])
+
+    # Get Player IDs
+    players = re.findall('href=\"/player/.*/', html)
+    if len(players) > 0:
+        for i in range(0, len(players)):
+            players[i] = (players[i].replace("href=\"/player/", "")).replace("/", "")
+    else:
+        pass
+
+    # Find player KDs
+    kd = re.findall('<td class=\"kd text-center\">.*</td>', html)
+    kills = []
+    deaths = []
+    if len(kd) > 0:
+        for i in range(0, len(kd)):
+            kd[i] = (kd[i].replace("<td class=\"kd text-center\">", "")).replace("</td>", "")
+            # Clean up the hyphenated numbers
+            kills.append(kd[i][0:kd[i].find('-')])
+            deaths.append(kd[i][kd[i].find('-')+1:len(kd[i])])
+    else:
+        pass
+    # Remove unnecessary instances of D
+    deaths[:] = [x for x in deaths if x != 'D']
+    # Remove unnecessary instances of K
+    kills[:] = [x for x in kills if x != 'K']
+
+    # Find player ADR
+    adr = re.findall('<td class=\"adr text-center \">.*</td>', html)
+    if len(adr) > 0:
+        for i in range(0, len(adr)):
+            adr[i] = (adr[i].replace("<td class=\"adr text-center \">", "")).replace("</td>", "")
+    else:
+        pass
+
+    # Find player KAST%
+    kast = re.findall('<td class=\"kast text-center\">.*</td>', html)
+    if len(kast) > 0:
+        for i in range(0, len(kast)):
+            kast[i] = (kast[i].replace("<td class=\"kast text-center\">", "")).replace("%</td>", "")
+    else:
+        pass
+
+    # Find player rating
+    rating = re.findall('<td class=\"rating text-center\">.*</td>', html)
+    if len(rating) > 0:
+        for i in range(0, len(rating)):
+            rating[i] = (rating[i].replace("<td class=\"rating text-center\">", "")).replace("</td>", "")
+    else:
+        pass
+    # Remove unnecessary instances of 'Rating'
+    rating[:] = [x for x in rating if x != 'Rating']
+
+    # Handle array building
+    masterArray = []
+    for i in range(0, len(maps)):
+        # Arrays have data for multiple matches, so this offsets us by the amount to get each map separately
+        offset = 10 * (i+1)
+        for b in range(0, 5):
+            playerArray = []
+            playerArray.append(maps[i])
+            playerArray.append(players[b+offset])
+            playerArray.append(kills[b+offset])
+            playerArray.append(deaths[b+offset])
+            playerArray.append(adr[b+offset])
+            playerArray.append(kast[b+offset])
+            playerArray.append(rating[b+offset])
+            playerArray.append(matchID)
+            masterArray.append(playerArray)
+            print(playerArray)
+        for b in range(5, 10):
+            playerArray = []
+            playerArray.append(maps[i])
+            playerArray.append(players[b+offset])
+            playerArray.append(kills[b+offset])
+            playerArray.append(deaths[b+offset])
+            playerArray.append(adr[b+offset])
+            playerArray.append(kast[b+offset])
+            playerArray.append(rating[b+offset])
+            playerArray.append(matchID)
+            masterArray.append(playerArray)
+            print(playerArray)
+    return masterArray
