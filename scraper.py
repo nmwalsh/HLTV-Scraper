@@ -2,6 +2,7 @@ from html import getHTML
 import re
 from datetime import datetime
 from string import digits
+from helper import tabulate
 
 
 def getEventNames(eventID):
@@ -306,9 +307,9 @@ def getPlayerStats(matchID):
     if len(maps) > 0:
         for i in range(0, len(maps)):
             maps[i] = (maps[i].replace("<div class=\"stats-content\" id=\"", "")).replace("-content\">", "").translate({ord(k): None for k in digits})
+        maps.remove(maps[0])
     else:
-        pass
-    maps.remove(maps[0])
+        return []
 
     # Get Player IDs
     players = re.findall('href=\"/player/.*/', html)
@@ -316,7 +317,7 @@ def getPlayerStats(matchID):
         for i in range(0, len(players)):
             players[i] = (players[i].replace("href=\"/player/", "")).replace("/", "")
     else:
-        pass
+        return []
 
     # Find player KDs
     kd = re.findall('<td class=\"kd text-center\">.*</td>', html)
@@ -329,7 +330,8 @@ def getPlayerStats(matchID):
             kills.append(kd[i][0:kd[i].find('-')])
             deaths.append(kd[i][kd[i].find('-')+1:len(kd[i])])
     else:
-        pass
+        print("No KD for %s" % (matchID))
+        return []
     # Remove unnecessary instances of D
     deaths[:] = [x for x in deaths if x != 'D']
     # Remove unnecessary instances of K
@@ -341,7 +343,7 @@ def getPlayerStats(matchID):
         for i in range(0, len(adr)):
             adr[i] = (adr[i].replace("<td class=\"adr text-center \">", "")).replace("</td>", "")
     else:
-        pass
+        adr = [""] * 50
 
     # Find player KAST%
     kast = re.findall('<td class=\"kast text-center\">.*</td>', html)
@@ -349,7 +351,7 @@ def getPlayerStats(matchID):
         for i in range(0, len(kast)):
             kast[i] = (kast[i].replace("<td class=\"kast text-center\">", "")).replace("%</td>", "")
     else:
-        pass
+        kast = [""] * 50
 
     # Find player rating
     rating = re.findall('<td class=\"rating text-center\">.*</td>', html)
@@ -357,7 +359,8 @@ def getPlayerStats(matchID):
         for i in range(0, len(rating)):
             rating[i] = (rating[i].replace("<td class=\"rating text-center\">", "")).replace("</td>", "")
     else:
-        pass
+        print("No Rating for %s" % (matchID))
+        return []
     # Remove unnecessary instances of 'Rating'
     rating[:] = [x for x in rating if x != 'Rating']
 
@@ -377,7 +380,6 @@ def getPlayerStats(matchID):
             playerArray.append(rating[b+offset])
             playerArray.append(matchID)
             masterArray.append(playerArray)
-            print(playerArray)
         for b in range(5, 10):
             playerArray = []
             playerArray.append(maps[i])
@@ -389,5 +391,5 @@ def getPlayerStats(matchID):
             playerArray.append(rating[b+offset])
             playerArray.append(matchID)
             masterArray.append(playerArray)
-            print(playerArray)
+    tabulate("playerStats", masterArray)
     return masterArray

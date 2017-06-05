@@ -53,9 +53,14 @@ else:
 
     # Step 6: Update playerStats.csv
     matches = getExistingData("matchIDs", 1)
+    print(len(matches))
+    existingMatches = getExistingData("playerStats", 7)
+    existingMatches = list(set(existingMatches))
+    newPlayerStats = removeExistingData(existingMatches, matches)
+    print(len(newPlayerStats))
     newPlayerStats = scrape(matches, getPlayerStats, threads)
     newPlayerStats = fixArray(fixArray(newPlayerStats))
-    tabulate("playerStats", newPlayerStats)
+    # TODO tabulate("playerStats", newPlayerStats)
 
     # Step 7: Update teams.csv
     newTeams = getNewIterableItems("team", findMax("teams", 2))

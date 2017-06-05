@@ -35,7 +35,7 @@ def tabulate(csvFile, array):
     with open("csv/%s.csv" % (csvFile), 'a', encoding='utf-8') as f:
         writer = csv.writer(f, delimiter=',')
         # Adds a new line if there is not one present
-        addNewLine("csv/%s.csv" % (csvFile))
+        # addNewLine("csv/%s.csv" % (csvFile))
         # Add the array passed in to the CSV file
         for i in range(0, len(array)):
             if len(array[i]) > 0:
