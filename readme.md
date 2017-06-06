@@ -38,7 +38,11 @@ Since this returns multidimensional arrays for matches with more than one map, t
  
 ## Getting Match Lineups 
 
-Next, the script parses the same new matches stored in `MatchesToCheck` and find the respective team lineups and tabulates the new information to `matchLineups.csv`.
+Next, the script parses the same new matches stored in `matchesToCheck` and find the respective team lineups and tabulates the new information to `matchLineups.csv`.
+
+## Getting player stats
+
+Each match has player stats for each map. The script looks for these statistics using the matches stored in `matchesToCheck` and appends the new data to `playerStats.csv`.
 
 ## Updating Players and Teams
 
