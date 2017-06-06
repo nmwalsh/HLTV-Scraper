@@ -2,7 +2,6 @@ from html import getHTML
 import re
 from datetime import datetime
 from string import digits
-from helper import tabulate
 
 
 def getEventNames(eventID):
@@ -160,7 +159,7 @@ def getMatchInfo(matchID):
                 sides.append("CT")
                 sides.append("T")
     else:
-        return True
+        return []
 
     # Find the scores if there is only one map
     if len(map) == 1:
@@ -182,7 +181,7 @@ def getMatchInfo(matchID):
             pass
         else:
             print("HLTV altered score layout for %s" % (matchID))
-            return True
+            return []
 
     # Make an array for pool.map to process
     result = []
@@ -236,7 +235,7 @@ def getMatchLineups(matchID):
     # Give up if no team names found
     if len(playerIDs) < 1:
         print("%s failed, no players detected" % (matchID))
-        return True
+        return []
     for i in range(0, len(playerIDs)):
         playerIDs[i] = (playerIDs[i].split("/"))[2].split("/")[0]
     # print(playerIDs)c
@@ -270,10 +269,10 @@ def getPlayers(playerID):
     # Find the type of event (online, LAN, etc)
     playerName = re.findall('Complete statistics for.*</a>', html)
     if len(playerName) < 1:
-        return True
+        return []
     playerCountry = re.findall('class=\"flag\" title=\".*\"> ', html)
     if len(playerCountry) < 1:
-        return True
+        return []
 
     # print teamName
     if len(playerName) > 0:
@@ -303,12 +302,13 @@ def getPlayerStats(matchID):
         return []
 
     # Get maps
-    maps = re.findall('<div class=\"stats-content\" id=\".*\">', html)
+    maps = re.findall('<div class=\"stats-content\" id=\".*-content\">', html)
     if len(maps) > 0:
         for i in range(0, len(maps)):
             maps[i] = (maps[i].replace("<div class=\"stats-content\" id=\"", "")).replace("-content\">", "").translate({ord(k): None for k in digits})
         maps.remove(maps[0])
     else:
+        print("No player stats for %s" % (matchID))
         return []
 
     # Get Player IDs
@@ -317,6 +317,7 @@ def getPlayerStats(matchID):
         for i in range(0, len(players)):
             players[i] = (players[i].replace("href=\"/player/", "")).replace("/", "")
     else:
+        print("No player IDs for %s" % (matchID))
         return []
 
     # Find player KDs
@@ -330,7 +331,7 @@ def getPlayerStats(matchID):
             kills.append(kd[i][0:kd[i].find('-')])
             deaths.append(kd[i][kd[i].find('-')+1:len(kd[i])])
     else:
-        print("No KD for %s" % (matchID))
+        print("No player K/D for %s" % (matchID))
         return []
     # Remove unnecessary instances of D
     deaths[:] = [x for x in deaths if x != 'D']
@@ -343,7 +344,8 @@ def getPlayerStats(matchID):
         for i in range(0, len(adr)):
             adr[i] = (adr[i].replace("<td class=\"adr text-center \">", "")).replace("</td>", "")
     else:
-        adr = [""] * 50
+        print("No player ADR for %s" % (matchID))
+        adr = [""] * 70
 
     # Find player KAST%
     kast = re.findall('<td class=\"kast text-center\">.*</td>', html)
@@ -351,7 +353,8 @@ def getPlayerStats(matchID):
         for i in range(0, len(kast)):
             kast[i] = (kast[i].replace("<td class=\"kast text-center\">", "")).replace("%</td>", "")
     else:
-        kast = [""] * 50
+        print("No player KAST ratio for %s" % (matchID))
+        kast = [""] * 70
 
     # Find player rating
     rating = re.findall('<td class=\"rating text-center\">.*</td>', html)
@@ -359,8 +362,9 @@ def getPlayerStats(matchID):
         for i in range(0, len(rating)):
             rating[i] = (rating[i].replace("<td class=\"rating text-center\">", "")).replace("</td>", "")
     else:
-        print("No Rating for %s" % (matchID))
+        print("No player Rating for %s" % (matchID))
         return []
+
     # Remove unnecessary instances of 'Rating'
     rating[:] = [x for x in rating if x != 'Rating']
 
@@ -391,5 +395,4 @@ def getPlayerStats(matchID):
             playerArray.append(rating[b+offset])
             playerArray.append(matchID)
             masterArray.append(playerArray)
-    tabulate("playerStats", masterArray)
     return masterArray

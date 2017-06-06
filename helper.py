@@ -1,6 +1,5 @@
 from multiprocessing.dummy import Pool as ThreadPool
 from html import getHTML
-import re
 import csv
 import sys
 
@@ -35,7 +34,7 @@ def tabulate(csvFile, array):
     with open("csv/%s.csv" % (csvFile), 'a', encoding='utf-8') as f:
         writer = csv.writer(f, delimiter=',')
         # Adds a new line if there is not one present
-        # addNewLine("csv/%s.csv" % (csvFile))
+        addNewLine("csv/%s.csv" % (csvFile))
         # Add the array passed in to the CSV file
         for i in range(0, len(array)):
             if len(array[i]) > 0:
@@ -96,6 +95,15 @@ def fixArray(array, value):
     return array
 
 
+def fixPlayerStats(array):
+    # Used to clean match info results for matches with more than one map
+    newArray = []
+    for i in range(0, len(array)):
+        for b in range(0, len(array[i])):
+            newArray.append(array[i][b])
+    return newArray
+
+
 def getNewIterableItems(page, startID):
     # Iterate through unique IDs until we get the last one, then return them to a list
     print("Checking for new %ss. This may take awhile." % (page))
@@ -104,7 +112,7 @@ def getNewIterableItems(page, startID):
     while check:
         startID += 1
         html = getHTML("https://www.hltv.org/%s/%s/a" % (page, startID))
-        if len(re.findall('error-desc', html)) > 0:
+        if html is None:
             check = False
         else:
             sys.stdout.write('\r'+"New %s found: %s" % (page, startID))
