@@ -53,6 +53,7 @@ else:
 
     # Step 6: Update playerStats.csv
     newPlayerStats = scrape(matchesToCheck, getPlayerStats, threads)
+    # This returns a single array for each match with all of the player stats, so we un-array it
     newPlayerStats = fixPlayerStats(newPlayerStats)
     if tab:
         tabulate("playerStats", newPlayerStats)
