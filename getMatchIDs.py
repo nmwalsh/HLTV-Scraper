@@ -12,7 +12,7 @@ def getMatchIDs(stop):
     # Create an array of all of the Demo URLs on the page
     matchIDs = findMatchIDsAtURL("https://www.hltv.org/results?offset=%s" % (offset))
 
-    # Determien if we need to paginate and create a varibale to keep track of pages
+    # Determine if we need to paginate and create a variable to keep track of pages
     morePages = endCheck(matchIDs, stop)
     page = 1
     print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
@@ -25,12 +25,12 @@ def getMatchIDs(stop):
         for m in moreMatchIDs:
             matchIDs.append(m)
 
-        # Continue paginating adn updating the user
+        # Continue paginating and updating the user
         page += 1
         print("Parsed page %s. %s IDs found so far." % (page, len(matchIDs)))
         morePages = endCheck(matchIDs, stop)
 
-    # Ensure that there have been no chanegs to the page layout
+    # Ensure that there have been no changes to the page layout
     if len(matchIDs) % 100 != 0:
         print("HLTV altered results page layout for offset %s" % (offset))
 
@@ -39,7 +39,7 @@ def getMatchIDs(stop):
     # Remove unecessary entries
     matchIDs = matchIDs[:slice]
 
-    # Adds the unique match identifier as an aray to each item
+    # Adds the unique match identifier as an array to each item
     for i in range(0, len(matchIDs)):
         string = matchIDs[i]
         split = string.split("/", 1)[0:1]
