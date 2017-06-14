@@ -18,9 +18,9 @@ def scrape(array, function, threads):
         return result
 
 
-# Handle an error where data is not added ta the end of the CSV file.
+# Handle an error where data is not added to the end of the CSV file.
 def addNewLine(file):
-    # Add a newline to the end of the file if there is not one
+    # Add a newline to the end of the file if there is not one already
     with open(file, "r+") as f:
         f.seek(0, 2)
         if(f.read() != '\n'):
@@ -67,11 +67,11 @@ def findMax(csvFile, colNum):
 
 
 def removeExistingData(existing, new):
-    # Remove data we alredy have from the list of new data to parse
+    # Remove data we already have from the list of new data to parse
     for i in new[:]:
         if i in existing:
             new.remove(i)
-    # Convert new values to a set to remove dupelicates, then back to a list
+    # Convert new values to a set to remove duplicates, then back to a list
     new = list(set(new))
     print("%s new items to add." % (len(new)))
     return new

@@ -16,7 +16,7 @@ newMatchIDs = getMatchIDs(existingMatchIDs[len(existingMatchIDs)-1])
 if len(newMatchIDs) < 1:
     print("No new matches found!")
 else:
-    # Tell teh use how many matches we will tabulate
+    # Tell the user how many matches we will tabulate
     print("%s new matches to tabulate" % (len(newMatchIDs)))
 
     # Step 1: add to matches.csv

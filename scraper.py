@@ -132,7 +132,7 @@ def getMatchInfo(matchID):
     else:
         teamIDs.append(0)
 
-    # Fidn the map(s) that the match was played on
+    # Find the map(s) that the match was played on
     if len(map) == 1:
         map[0] = (map[0].replace("<div class=\"mapname\">", "")).replace("</div>", "")
     elif len(map) > 1:
@@ -141,7 +141,7 @@ def getMatchInfo(matchID):
     else:
         map.append(0)
 
-    # Find the team starding and half sides
+    # Find the team standing and half sides
     sides = []
     if len(scores) == 1:
         if re.findall('\"t\"|\"ct\"', scores[0])[0] == '\"t\"':
